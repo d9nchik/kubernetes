@@ -2,3 +2,7 @@ js/node_modules
 *.js
 node/build
 .vscode
+
+# Python
+python/.venv
+__pycache__
