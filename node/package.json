@@ -1,0 +1,34 @@
+{
+  "name": "thanks-bot",
+  "version": "1.0.0",
+  "description": "bot for earning thanks",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d9nchik/thanks-bot.git"
+  },
+  "keywords": [
+    "thanks",
+    "telegram",
+    "bot",
+    "node"
+  ],
+  "author": "d9nich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/d9nchik/thanks-bot/issues"
+  },
+  "homepage": "https://github.com/d9nchik/thanks-bot#readme",
+  "devDependencies": {
+    "@types/node": "^16.10.1",
+    "@typescript-eslint/eslint-plugin": "^4.31.2",
+    "@typescript-eslint/parser": "^4.31.2",
+    "eslint": "^7.32.0",
+    "eslint-plugin-sonarjs": "^0.10.0",
+    "prettier": "^2.4.1",
+    "typescript": "^4.4.3"
+  }
+}
