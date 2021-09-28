@@ -10,13 +10,13 @@ spec:
             pathType: Prefix # все, що починається з `/api` буде направлено на сервіс demo-service. Альтернативно можна використовувати `Exact` та `ImplementationSpecific`
             backend:
               service:
-                name: node-service # ім'я сервісу
+                name: {{ .Values.node.serviceName }} # ім'я сервісу
                 port:
                   number: 80 # порт на якому запущено сервіс
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: python-service
+                name: {{ .Values.python.serviceName }}
                 port:
                   number: 80
