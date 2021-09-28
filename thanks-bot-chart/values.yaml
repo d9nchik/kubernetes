@@ -1,0 +1,21 @@
+image:
+  ownerName: d9nich
+  pullPolicy: IfNotPresent
+
+python:
+  serviceName: python-service
+  deploymentName: python-deployment
+  containerPort: 5000
+  appName: python
+  image:
+    repository: thanks-bot-python
+    tag: latest
+
+node:
+  serviceName: node-service
+  deploymentName: node-deployment
+  containerPort: 8080
+  appName: node
+  image:
+    repository: thanks-bot-node
+    tag: latest

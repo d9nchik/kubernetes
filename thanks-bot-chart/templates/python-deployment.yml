@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.python.deploymentName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.python.appName }}
+  template:
+    metadata:
+     labels:
+       app: {{ .Values.python.appName }}
+    spec:
+      containers:
+        - image:  "d9nich/{{ .Values.python.image.repository }}:{{ .Values.python.image.tag }}"
+          imagePullPolicy: {{ .Values.image.PullPolicy }}
+          name: {{ .Values.python.appName }}
+          ports:
+            - containerPort: {{ .Values.python.containerPort }} 
