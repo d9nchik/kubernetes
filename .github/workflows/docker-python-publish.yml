@@ -38,8 +38,8 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: |
-            d9nich/thanks-bot-node
-            ghcr.io/${{ github.repository }}
+            d9nich/thanks-bot-python
+            ghcr.io/thanks-bot-python
       
       - name: Build and push Docker images
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -47,4 +47,4 @@ jobs:
           context: python
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: "thanks-bot-python"
+          labels: ${{ steps.meta.outputs.labels }}
