@@ -1,11 +1,2 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Values.python.serviceName }}
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: {{ .Values.python.containerPort }}
-  selector:
-    app: {{ .Values.python.appName }}
+{{- $service := .Values.python -}}
+{{ template "service.app" $service }}

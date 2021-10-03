@@ -1,20 +1,3 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Values.node.deploymentName }}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: {{ .Values.node.appName }}
-  template:
-    metadata:
-     labels:
-       app: {{ .Values.node.appName }}
-    spec:
-      containers:
-        - image:  "d9nich/{{ .Values.node.image.repository }}:{{ .Values.node.image.tag }}"
-          imagePullPolicy: {{ .Values.image.PullPolicy }}
-          name: {{ .Values.node.appName }}
-          ports:
-            - containerPort: {{ .Values.node.containerPort }} 
+{{- $service := .Values.node -}}
+{{- $data := dict "service" $service "pullPolicy" .Values.image.PullPolicy -}}
+{{ template "deployment.app" $data }}
