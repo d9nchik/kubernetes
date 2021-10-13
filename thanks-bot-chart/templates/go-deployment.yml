@@ -1,0 +1,3 @@
+{{- $service := .Values.go -}}
+{{- $data := dict "service" $service "pullPolicy" .Values.image.PullPolicy -}}
+{{ template "deployment.app" $data }}

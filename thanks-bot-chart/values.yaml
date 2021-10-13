@@ -19,3 +19,12 @@ node:
   image:
     repository: thanks-bot-node
     tag: latest
+
+go:
+  serviceName: go-service
+  deploymentName: go-deployment
+  containerPort: 8080
+  appName: go
+  image:
+    repository: thanks-bot-go
+    tag: latest

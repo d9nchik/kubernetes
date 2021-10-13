@@ -20,3 +20,10 @@ spec:
                 name: {{ .Values.python.serviceName }}
                 port:
                   number: 80
+          - path: /api/root-service
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.go.serviceName }}
+                port:
+                  number: 80
