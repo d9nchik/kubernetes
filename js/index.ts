@@ -2,11 +2,12 @@ import fastify from 'fastify';
 const server = fastify({ logger: true });
 
 let isHealth = true;
+const unhealthTime = 10; // in seconds
 
 // Declare a route
 server.get('/api/service1', async (request, reply) => {
   if (!isHealth) {
-    await sleep(2000);
+    await sleep(unhealthTime * 1000);
   }
   reply.status(200);
   reply.send('Hello from node server!');
