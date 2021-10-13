@@ -1,3 +1,6 @@
 {{- $service := .Values.node -}}
+{{ template "service.app" $service }}
+---
+{{- $service := .Values.node -}}
 {{- $data := dict "service" $service "pullPolicy" .Values.image.PullPolicy -}}
 {{ template "deployment.app" $data }}

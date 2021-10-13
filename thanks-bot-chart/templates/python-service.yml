@@ -1,2 +1,0 @@
-{{- $service := .Values.python -}}
-{{ template "service.app" $service }}

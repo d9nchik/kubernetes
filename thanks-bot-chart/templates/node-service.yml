@@ -1,2 +1,0 @@
-{{- $service := .Values.node -}}
-{{ template "service.app" $service }}

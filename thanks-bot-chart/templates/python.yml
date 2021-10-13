@@ -1,3 +1,6 @@
 {{- $service := .Values.python -}}
+{{ template "service.app" $service }}
+---
+{{- $service := .Values.python -}}
 {{- $data := dict "service" $service "pullPolicy" .Values.image.PullPolicy -}}
 {{ template "deployment.app" $data }}
