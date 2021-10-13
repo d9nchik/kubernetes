@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ .service.deploymentName }}
 spec:
-  replicas: 1
+  replicas: {{ .service.replicas | default 1 }}
   selector:
     matchLabels:
       app: {{ .service.appName }}
@@ -19,6 +19,12 @@ spec:
           name: {{ .service.appName }}
           ports:
             - containerPort: {{ .service.containerPort }} 
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 75m
+              memory: 64Mi
 {{- end -}}
 
 
