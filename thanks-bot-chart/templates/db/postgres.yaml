@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{- .Values.postgres.appName -}}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{- .Values.postgres.appName -}}"
+  template:
+    metadata:
+      labels:
+        app: "{{- .Values.postgres.appName -}}"
+    spec:
+      containers:
+        - name: "{{- .Values.postgres.appName -}}"
+          image: "{{- .Values.postgres.image.repository -}}:{{- .Values.postgres.image.tag -}}"
+          imagePullPolicy: "{{- .Values.image.pullPolicy -}}"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "{{- .Values.postgres.env.dbName -}}"
+            - name: POSTGRES_USER
+              value: "{{- .Values.postgres.env.user -}}"
+            - name: POSTGRES_PASSWORD # так працювати з конфігураціями в прод середовищі не варто, це буде розглянуто в наступних лабораторних
+              value: "{{- .Values.postgres.env.password -}}"
+          volumeMounts: # прив'язка контейнеру, до *volume*
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes: # визначення *volume*, прив'язка до PersistentVolumeClaim
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: "{{- .Values.persistanceVolume.name -}}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{- .Values.postgres.appName -}}-service"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: "{{- .Values.postgres.appName -}}"

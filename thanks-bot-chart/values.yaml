@@ -29,3 +29,17 @@ go:
   image:
     repository: thanks-bot-go
     tag: latest
+
+postgres:
+  appName: postgres
+  image:
+    repository: postgres
+    tag: latest
+  env:
+    dbName: demo
+    user: postgres
+    password: secretPass
+
+persistanceVolume:
+  name: db-storage
+  storage: 5Gi
