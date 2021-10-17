@@ -6,3 +6,6 @@ node/build
 # Python
 python/.venv
 __pycache__
+
+# HELM
+thanks-bot-chart/charts
