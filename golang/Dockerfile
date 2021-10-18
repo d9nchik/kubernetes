@@ -11,5 +11,4 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 COPY --from=builder /go/bin/app /app
 ENTRYPOINT /app
-LABEL Name=thanksbot Version=0.0.1
-EXPOSE 8080
+LABEL Name=thanksbot-go Version=0.0.1

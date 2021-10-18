@@ -1,40 +1,98 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"net/http"
+	"context"
+	"encoding/json"
+	"log"
+	"os"
+	"os/signal"
+
+	"github.com/Shopify/sarama"
+	"github.com/jackc/pgx/v4"
 )
 
-func getRemote(url string, results chan<- string) {
-	resp, err := http.Get(url)
-	if err != nil {
-		results <- err.Error()
-		return
-	}
-	// do not forget to close body
-	defer resp.Body.Close()
-	body, err2 := ioutil.ReadAll(resp.Body)
-	if err2 != nil {
-		results <- err2.Error()
-	} else {
-		results <- string(body)
-	}
+type ChangeBalanceStruct struct {
+	AccountID     int
+	Money         int
+	TypeOperation string `json:"type"`
 }
 
 func main() {
-	http.HandleFunc("/api/root-service", func(w http.ResponseWriter, r *http.Request) {
-		nodeResult := make(chan string)
-		pythonResult := make(chan string)
-		// Parallel run
-		go getRemote("http://node-service/api/service1", nodeResult)
-		go getRemote("http://python-service/", pythonResult)
+	// KAFKA URL should be in format address:9092
+	consumer, err := sarama.NewConsumer([]string{os.Getenv("KAFKA_URL")}, sarama.NewConfig())
+	if err != nil {
+		panic(err)
+	}
 
-		// Thanks to channels code will be executed sequently
-		response1Message := fmt.Sprintf("node response: %s \n\n", <-nodeResult)
-		response2Message := fmt.Sprintf("python response: %s \n\n", <-pythonResult)
+	defer func() {
+		if err := consumer.Close(); err != nil {
+			log.Fatalln(err)
+		}
+	}()
 
-		fmt.Fprintf(w, response1Message+response2Message)
-	})
-	http.ListenAndServe(":8080", nil)
+	partitionConsumer, err := consumer.ConsumePartition("change-balance", 0, sarama.OffsetNewest)
+	if err != nil {
+		panic(err)
+	}
+
+	defer func() {
+		if err := partitionConsumer.Close(); err != nil {
+			log.Fatalln(err)
+		}
+	}()
+
+	// Trap SIGINT to trigger a shutdown.
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, os.Interrupt)
+	// urlExample := "postgres://username:password@localhost:5432/database_name"
+	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+
+	if err != nil {
+		log.Fatalf("Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+	defer conn.Close(context.Background())
+
+	consumed := 0
+ConsumerLoop:
+	for {
+		select {
+		case msg := <-partitionConsumer.Messages():
+			var data ChangeBalanceStruct
+			err := json.Unmarshal(msg.Value, &data)
+			if err != nil {
+				log.Fatalf("Marshall error: %v\n", err)
+				continue
+			}
+			if data.TypeOperation == "withdraw" {
+				data.Money = -data.Money
+			} else if data.TypeOperation != "deposit" {
+				log.Fatalln("Unknown operation type")
+				continue
+			}
+
+			var balance int
+			err = conn.QueryRow(context.Background(), "SELECT balance FROM bank_accounts WHERE id=$1", data.AccountID).Scan(&balance)
+			if err != nil {
+				log.Fatalln("SELECT balance is unsuccessfull")
+				continue
+			}
+			balance = balance + data.Money
+			if balance < 0 {
+				log.Fatalln("Illegal withdraw")
+				continue
+			}
+			_, err = conn.Exec(context.Background(), "UPDATE bank_accounts SET balance= WHERE id=$1;", data.AccountID, balance)
+			if err != nil {
+				log.Fatalln("Update failed")
+				continue
+			}
+			log.Printf("Consumed message offset %d\n", msg.Offset)
+			consumed++
+		case <-signals:
+			break ConsumerLoop
+		}
+	}
+
+	log.Printf("Consumed: %d\n", consumed)
 }
