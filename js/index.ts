@@ -1,7 +1,8 @@
 import fastify from 'fastify';
-const server = fastify({ logger: true });
-
 import Kafka from 'node-rdkafka';
+
+const KAFKA_URL = process.env.KAFKA_URL;
+const server = fastify({ logger: true });
 
 interface ChangeBalanceProps {
   accountID: number;
@@ -14,7 +15,7 @@ interface ChangeBalanceWithOperationProps extends ChangeBalanceProps {
 
 const stream = Kafka.Producer.createWriteStream(
   {
-    'metadata.broker.list': 'lab-kafka:9092',
+    'metadata.broker.list': KAFKA_URL,
   },
   {},
   { topic: 'change-balance' }
