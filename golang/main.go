@@ -179,31 +179,31 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 		var data ChangeBalanceStruct
 		err := json.Unmarshal(message.Value, &data)
 		if err != nil {
-			log.Fatalf("Marshall error: %v\n", err)
+			log.Printf("Marshall error: %v\n", err)
 			session.MarkMessage(message, "")
 			continue
 		}
 		if data.TypeOperation == "withdraw" {
 			data.Money = -data.Money
 		} else if data.TypeOperation != "deposit" {
-			log.Fatalln("Unknown operation type")
+			log.Println("Unknown operation type")
 			session.MarkMessage(message, "")
 			continue
 		}
 		var balance int
 		err = consumer.conn.QueryRow(context.Background(), "SELECT balance FROM bank_accounts WHERE id=$1", data.AccountID).Scan(&balance)
 		if err != nil {
-			log.Fatalln("SELECT balance is unsuccessfull")
+			log.Println("SELECT balance is unsuccessfull")
 			session.MarkMessage(message, "")
 			continue
 		}
 		balance = balance + data.Money
 		if balance < 0 {
-			log.Fatalln("Illegal withdraw")
+			log.Println("Illegal withdraw")
 			session.MarkMessage(message, "")
 			continue
 		}
-		_, err = consumer.conn.Exec(context.Background(), "UPDATE bank_accounts SET balance=$2 WHERE id=$1;", data.AccountID, balance)
+		_, err = consumer.conn.Exec(context.Background(), "UPDATE bank_accounts SET balance=$1 WHERE id=$2;", balance, data.AccountID)
 		if err != nil {
 			log.Fatalln("Update failed")
 			session.MarkMessage(message, "")
