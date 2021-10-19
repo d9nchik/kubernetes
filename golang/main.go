@@ -176,33 +176,37 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 	// https://github.com/Shopify/sarama/blob/main/consumer_group.go#L27-L29
 	for message := range claim.Messages() {
 		log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
-
 		var data ChangeBalanceStruct
 		err := json.Unmarshal(message.Value, &data)
 		if err != nil {
 			log.Fatalf("Marshall error: %v\n", err)
+			session.MarkMessage(message, "")
 			continue
 		}
 		if data.TypeOperation == "withdraw" {
 			data.Money = -data.Money
 		} else if data.TypeOperation != "deposit" {
 			log.Fatalln("Unknown operation type")
+			session.MarkMessage(message, "")
 			continue
 		}
 		var balance int
 		err = consumer.conn.QueryRow(context.Background(), "SELECT balance FROM bank_accounts WHERE id=$1", data.AccountID).Scan(&balance)
 		if err != nil {
 			log.Fatalln("SELECT balance is unsuccessfull")
+			session.MarkMessage(message, "")
 			continue
 		}
 		balance = balance + data.Money
 		if balance < 0 {
 			log.Fatalln("Illegal withdraw")
+			session.MarkMessage(message, "")
 			continue
 		}
 		_, err = consumer.conn.Exec(context.Background(), "UPDATE bank_accounts SET balance=$2 WHERE id=$1;", data.AccountID, balance)
 		if err != nil {
 			log.Fatalln("Update failed")
+			session.MarkMessage(message, "")
 			continue
 		}
 		log.Printf("Consumed message offset %d\n", message.Offset)
