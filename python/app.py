@@ -21,7 +21,7 @@ def hello_world():
 if __name__ == '__main__':
     broker = kafka_url
     group = 'python'
-    topics = ['successful-operations']
+    topics = ['successfull-operations']
     # Consumer configuration
     # See https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
     conf = {'bootstrap.servers': broker, 'group.id': group, 'session.timeout.ms': 6000,
