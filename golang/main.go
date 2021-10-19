@@ -200,7 +200,7 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 			log.Fatalln("Illegal withdraw")
 			continue
 		}
-		_, err = consumer.conn.Exec(context.Background(), "UPDATE bank_accounts SET balance= WHERE id=$1;", data.AccountID, balance)
+		_, err = consumer.conn.Exec(context.Background(), "UPDATE bank_accounts SET balance=$2 WHERE id=$1;", data.AccountID, balance)
 		if err != nil {
 			log.Fatalln("Update failed")
 			continue
