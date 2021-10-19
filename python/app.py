@@ -45,6 +45,8 @@ if __name__ == '__main__':
     # Subscribe to topics
     c.subscribe(topics, on_assign=print_assignment)
 
+    print('Started Job')
+
     # Read messages from Kafka, print to stdout
     try:
         while True:
@@ -55,9 +57,9 @@ if __name__ == '__main__':
                 raise KafkaException(msg.error())
             else:
                 # Proper message
-                sys.stderr.write('%% %s [%d] at offset %d with key %s:\n' %
-                                 (msg.topic(), msg.partition(), msg.offset(),
-                                  str(msg.key())))
+                print('%% %s [%d] at offset %d with key %s:\n' %
+                      (msg.topic(), msg.partition(), msg.offset(),
+                       str(msg.key())))
                 print(msg.value())
                 data = json.loads(msg.value())
                 if data['type'] == 'deposit':
