@@ -16,7 +16,6 @@ node:
   deploymentName: node-deployment
   containerPort: 8080
   appName: node
-  replicas: 3
   image:
     repository: thanks-bot-node
     tag: latest

@@ -25,6 +25,11 @@ spec:
             requests:
               cpu: 75m
               memory: 64Mi
+          env:
+            - name: KAFKA_URL
+              value: "{{- .releaseName -}}-kafka:9092"
+            - name: DATABASE_URL
+              value: "postgres://postadmin:secretPass@{{- .releaseName -}}-postgresql:5432/postgres"
 {{- end -}}
 
 
