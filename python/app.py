@@ -1,5 +1,4 @@
 import json
-from flask import Flask
 from os import getenv
 from confluent_kafka import Consumer, KafkaException
 import sys
@@ -9,13 +8,6 @@ income = 0
 outcome = 0
 
 kafka_url = getenv('KAFKA_URL')
-
-app = Flask(__name__)
-
-
-@app.route("/")
-def hello_world():
-    return "<p>Income: {}<br>Outcome: {}</p>".format(income, outcome)
 
 
 if __name__ == '__main__':
@@ -66,6 +58,7 @@ if __name__ == '__main__':
                     income += data['money']
                 else:
                     outcome += data['money']
+            print("<p>Income: {}<br>Outcome: {}</p>".format(income, outcome))
 
     except KeyboardInterrupt:
         sys.stderr.write('%% Aborted by user\n')
