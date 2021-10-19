@@ -7,20 +7,8 @@ COPY . .
 RUN npm run build
 
 # runtime stage
-FROM node:14-alpine
+FROM node:14
 ENV NODE_ENV=production
-RUN apk --no-cache add \
-      bash \
-      g++ \
-      ca-certificates \
-      lz4-dev \
-      musl-dev \
-      cyrus-sasl-dev \
-      openssl-dev \
-      make \
-      python
-RUN ln -s /lib/ld-musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2 
-RUN apk add --no-cache --virtual .build-deps gcc zlib-dev libc-dev bsd-compat-headers py-setuptools bash
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "../"]
 RUN cd .. && npm ci
