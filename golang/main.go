@@ -15,12 +15,6 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-type ChangeBalanceStruct struct {
-	AccountID     int
-	Money         int
-	TypeOperation string `json:"type"`
-}
-
 var (
 	brokers  = ""
 	version  = ""
@@ -144,8 +138,9 @@ func main() {
 
 // Consumer represents a Sarama consumer group consumer
 type Consumer struct {
-	ready chan bool
-	conn  pgx.Conn
+	ready       chan bool
+	conn        pgx.Conn
+	logProducer sarama.AsyncProducer
 }
 
 // Setup is run at the beginning of a new session, before ConsumeClaim
@@ -159,6 +154,8 @@ func (consumer *Consumer) Setup(sarama.ConsumerGroupSession) error {
 	consumer.conn = *conn
 	// Mark the consumer as ready
 	close(consumer.ready)
+
+	consumer.logProducer = newAccessLogProducer([]string{os.Getenv("KAFKA_URL")})
 	return nil
 }
 
@@ -208,6 +205,12 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 			log.Fatalln("Update failed")
 			session.MarkMessage(message, "")
 			continue
+		}
+
+		consumer.logProducer.Input() <- &sarama.ProducerMessage{
+			Topic: "successfull-operations",
+			Key:   sarama.StringEncoder(data.TypeOperation),
+			Value: &data,
 		}
 		log.Printf("Consumed message offset %d\n", message.Offset)
 		session.MarkMessage(message, "")
