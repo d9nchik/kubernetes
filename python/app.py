@@ -57,7 +57,7 @@ if __name__ == '__main__':
                 if data['type'] == 'deposit':
                     income += data['money']
                 else:
-                    outcome += data['money']
+                    outcome -= data['money']
             print("<p>Income: {}<br>Outcome: {}</p>".format(income, outcome))
 
     except KeyboardInterrupt:
