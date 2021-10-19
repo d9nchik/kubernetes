@@ -53,11 +53,15 @@ func main() {
 	}
 	defer conn.Close(context.Background())
 
+	log.Println("Service started successfully")
+
 	consumed := 0
 ConsumerLoop:
 	for {
 		select {
 		case msg := <-partitionConsumer.Messages():
+			log.Printf("Get new message: %v8\n", msg.Value)
+
 			var data ChangeBalanceStruct
 			err := json.Unmarshal(msg.Value, &data)
 			if err != nil {
