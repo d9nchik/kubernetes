@@ -62,8 +62,6 @@ func getToken(jwt string, vaultAddr string) string {
 	}
 
 	log.Println(resp.StatusCode)
-	result, err := ioutil.ReadAll(resp.Body)
-	log.Println(string(result))
 	defer resp.Body.Close()
 	response := &KubernetesResponse{}
 
