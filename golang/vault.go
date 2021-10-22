@@ -119,7 +119,7 @@ func getFromTokenVault(token string, vaultAddr string) Vault {
 
 func GetVault() Vault {
 	vaultAddr := os.Getenv("VAULT_ADDR")
-	if vaultAddr != "" {
+	if vaultAddr == "" {
 		vaultAddr = "http://localhost:8200"
 	}
 
