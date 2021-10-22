@@ -55,13 +55,14 @@ func getToken(jwt string, vaultAddr string) string {
 	client := &http.Client{}
 
 	// set the request header Content-Type for json
-	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println(resp.StatusCode)
+	log.Println(resp.Body)
 	defer resp.Body.Close()
 	response := &KubernetesResponse{}
 
@@ -88,7 +89,7 @@ func getJWT() string {
 	}()
 
 	b, err := ioutil.ReadAll(file)
-	log.Println(b)
+	log.Println(string(b))
 	return string(b)
 }
 
@@ -100,7 +101,7 @@ func getFromTokenVault(token string, vaultAddr string) Vault {
 	if err != nil {
 		log.Fatal(err)
 	}
-	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Vault-Token", token)
 
 	resp, err := client.Do(req)
