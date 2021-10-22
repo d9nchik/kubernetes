@@ -13,7 +13,7 @@ import (
 type Vault struct {
 	PostgresqlUsername    string `json:"postgresqlUsername"`
 	PostgresqlPassword    string `json:"postgresqlPassword"`
-	PostgresqlAddressName string `json:postgresqlAddressName`
+	PostgresqlAddressName string `json:"postgresqlAddressName"`
 }
 
 type DataVault struct {
