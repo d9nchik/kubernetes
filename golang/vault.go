@@ -69,6 +69,7 @@ func getToken(jwt string, vaultAddr string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println(response)
 	return response.AuthObj.ClientToken
 }
 
@@ -87,6 +88,7 @@ func getJWT() string {
 	}()
 
 	b, err := ioutil.ReadAll(file)
+	log.Println(b)
 	return string(b)
 }
 
@@ -114,6 +116,7 @@ func getFromTokenVault(token string, vaultAddr string) Vault {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Println(response)
 	return response.DataVault.Data
 }
 
