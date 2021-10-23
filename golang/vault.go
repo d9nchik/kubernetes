@@ -10,6 +10,9 @@ import (
 	"os"
 )
 
+// Read: https://www.vaultproject.io/api#authentication
+// Good example on ruby https://github.com/burtlo/vault-action-exampleapp/blob/master/lib/service.rb
+
 type Vault struct {
 	PostgresqlUsername    string `json:"postgresqlUsername"`
 	PostgresqlPassword    string `json:"postgresqlPassword"`
