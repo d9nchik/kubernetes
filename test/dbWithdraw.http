@@ -1,17 +1,17 @@
-POST http://127.0.0.1:8080/withdraw HTTP/1.1
+POST http://localhost:8080//withdraw HTTP/1.1
 content-type: application/json
 
 {
-    "accountID": 1,
-    "money": 1000
+    "accountID": 2,
+    "money": 700
 }
 
 ###
 
-POST http://127.0.0.1:8080/deposit HTTP/1.1
+POST http://localhost:8080/deposit HTTP/1.1
 content-type: application/json
 
 {
-    "accountID": 1,
-    "money": 1000
+    "accountID": 2,
+    "money": 200
 }

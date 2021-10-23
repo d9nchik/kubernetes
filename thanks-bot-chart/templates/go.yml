@@ -1,6 +1,39 @@
 {{- $service := .Values.go -}}
 {{ template "service.app" $service }}
 ---
-{{- $service := .Values.go -}}
-{{- $data := dict "service" $service "pullPolicy" .Values.image.PullPolicy "releaseName" .Release.Name -}}
-{{ template "deployment.app" $data }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: {{ .Values.go.deploymentName }}
+spec:
+  replicas: {{ .Values.go.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.go.appName }}
+  template:
+    metadata:
+     labels:
+       app: {{ .Values.go.appName }}
+    spec:
+      # Helps to access token
+      serviceAccountName: vault
+      containers:
+        - image:  "d9nich/{{ .Values.go.image.repository }}:{{ .Values.go.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          name: {{ .Values.go.appName }}
+          ports:
+            - containerPort: {{ .Values.go.containerPort }} 
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              cpu: 75m
+              memory: 64Mi
+          env:
+            - name: KAFKA_URL
+              value: "{{- .Release.Name -}}-kafka:9092"
+            - name: VAULT_ADDR
+              value: 'http://vault:8200'
+            - name: JWT_PATH
+              value: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+            

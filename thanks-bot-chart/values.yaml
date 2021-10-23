@@ -28,7 +28,3 @@ go:
   image:
     repository: thanks-bot-go
     tag: latest
-
-postgresql:
-  postgresqlPassword: secretPass
-  postgresqlUsername: postadmin
