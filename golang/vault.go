@@ -14,9 +14,7 @@ import (
 // Good example on ruby https://github.com/burtlo/vault-action-exampleapp/blob/master/lib/service.rb
 
 type Vault struct {
-	PostgresqlUsername    string `json:"postgresqlUsername"`
-	PostgresqlPassword    string `json:"postgresqlPassword"`
-	PostgresqlAddressName string `json:"postgresqlAddressName"`
+	PostgresqlURL string `json:"postgresqlURL"`
 }
 
 type DataVault struct {
@@ -118,7 +116,7 @@ func getFromTokenVault(token string, vaultAddr string) Vault {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	return response.DataVault.Data
 }
 

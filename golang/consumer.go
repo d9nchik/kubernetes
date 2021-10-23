@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 
@@ -23,8 +22,7 @@ func (consumer *Consumer) Setup(sarama.ConsumerGroupSession) error {
 
 	// urlExample := "postgres://username:password@localhost:5432/database_name"
 	vault := GetVault()
-	databaseURL := fmt.Sprintf("postgres://%s:%s@%s:5432/postgres", vault.PostgresqlUsername, vault.PostgresqlPassword, vault.PostgresqlAddressName)
-	conn, err := pgx.Connect(context.Background(), databaseURL)
+	conn, err := pgx.Connect(context.Background(), vault.PostgresqlURL)
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 		os.Exit(1)
