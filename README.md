@@ -97,7 +97,7 @@ Vault accepts this service token from any client within the Kubernetes cluster. 
 
 Configure the Kubernetes authentication method to use the service account token, the location of the Kubernetes host, and its certificate.
 
-You can validate the issuer name of your Kubernetes cluster using [this method](https://www.vaultproject.io/docs/auth/kubernetes#discovering-the-service-account-issuer).
+#### You can validate the issuer name of your Kubernetes cluster using [this method](https://www.vaultproject.io/docs/auth/kubernetes#discovering-the-service-account-issuer).
 Here we use for digitalocean.
 ```bash
 vault write auth/kubernetes/config \
