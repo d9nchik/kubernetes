@@ -1,4 +1,4 @@
-autopep8==1.5.7
+autopep8==1.6.0
 click==8.0.1
 confluent-kafka==1.7.0
 itsdangerous==2.0.1
