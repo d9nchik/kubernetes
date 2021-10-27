@@ -26,6 +26,3 @@ dependencies:
   - name: kafka
     version: 14.2.x
     repository: https://charts.bitnami.com/bitnami
-  - name: postgresql
-    version: 10.12.x
-    repository: https://charts.bitnami.com/bitnami

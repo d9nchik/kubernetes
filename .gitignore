@@ -9,3 +9,6 @@ __pycache__
 
 # HELM
 thanks-bot-chart/charts
+
+# Hashicorp Vault
+cluster-keys.json

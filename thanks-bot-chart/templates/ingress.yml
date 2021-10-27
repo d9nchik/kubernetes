@@ -7,9 +7,9 @@ spec:
     - http:
         paths:
           - path: / # шлях по якому відбувається перенаправлення на сервіс
-            pathType: Prefix 
+            pathType: Prefix
             backend:
               service:
-                name: {{ .Values.node.serviceName }} # ім'я сервісу
+                name: '{{ .Values.node.serviceName }}' # ім'я сервісу
                 port:
                   number: 80 # порт на якому запущено сервіс
