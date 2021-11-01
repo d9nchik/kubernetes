@@ -1,5 +1,5 @@
 # build stage
-FROM node:14
+FROM node:17
 WORKDIR /build
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm ci
@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # runtime stage
-FROM node:14
+FROM node:17
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "../"]
